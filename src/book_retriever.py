@@ -56,35 +56,29 @@ class BookRetriever():
         Gets the important information from a book
         Returns None if the book doesn't have a valid publication date
         """
-        # Gets the volume information
         info = book.get("volumeInfo", {})
         
         # Publication date - must exist and be valid
         raw_date = info.get("publishedDate", "")
         publication_year = self.__extract_publication_year(raw_date)
         
-        # If no valid publication year, skip this book
         if not publication_year:
             return None
         
-        # Extracts each field (with default values if it doesn't exist)
         title = info.get("title", "Untitled")
         
-        # Authors come as a list, join with comma
         authors = info.get("authors", [])
         if authors:
             authors_text = ", ".join(authors)
         else:
             authors_text = "Unknown"
         
-        # Categories/genres (come as a list, join with comma)
         categories = info.get("categories", [])
         if categories:
             genres = ", ".join(categories)
         else:
             genres = "Unknown"
         
-        # Google ID
         google_id = book.get("id", "")
         
         return {
@@ -103,7 +97,6 @@ class BookRetriever():
         print("\nRequesting some random books from Google Books API...")
         print("-" * 50)
         
-        # Makes some attempts if it doesn't find books
         print("Waiting for the API response...\n")
         attempts = 0
         max_attempts = 3
@@ -116,7 +109,6 @@ class BookRetriever():
                 attempts += 1
                 continue
             
-            # Gets the list of books
             page_books = result.get("items", [])
             
             if page_books:
@@ -130,7 +122,6 @@ class BookRetriever():
             time.sleep(3)
             return []
         
-        # Processes all found books and filters out those without valid publication dates
         all_books = []
         books_without_date = 0
         
